@@ -1,4 +1,6 @@
 ﻿package me.venomts.pages;
 
-public class LoginPage {
+public class LoginPage
+{
+    int a;
 }
