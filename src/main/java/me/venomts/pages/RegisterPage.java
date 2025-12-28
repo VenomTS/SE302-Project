@@ -50,6 +50,4 @@ public class RegisterPage
     {
         assertThat(_registerAlert).containsText("An account with this username and/or email address already exists");
     }
-
-
 }
