@@ -4,13 +4,8 @@ import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
-import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-
-import java.nio.file.Paths;
-
-import static org.junit.Assert.assertTrue;
 
 class RegisterPageTest
 {
@@ -25,7 +20,7 @@ class RegisterPageTest
     void setUp()
     {
         _playwright = Playwright.create();
-        _browser = _playwright.firefox().launch(new BrowserType.LaunchOptions());
+        _browser = _playwright.firefox().launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(500));
         _page = _browser.newPage();
 
         _page.navigate(PageURL);
@@ -37,10 +32,6 @@ class RegisterPageTest
     @Test
     void RegisterNewAccount()
     {
-        /*
-        Moramo skontati email koji ce proci verifikaciju na prezentaciji jer ne smijemo koristiti testne mails
-         */
-
         String userName = "Some Testing Username";
         String mail = "Some Testing Mail";
         String password = "Some Testing Password";
@@ -48,8 +39,7 @@ class RegisterPageTest
         _registerPage.FillRegisterInformation(userName, mail, password);
         _registerPage.ClickRegisterButton();
 
-        boolean isSuccessfulRegistration = _registerPage.IsAccountCreated();
-        assertTrue(isSuccessfulRegistration);
+        _registerPage.AssertAccountCreated();
     }
 
     @Test
@@ -62,8 +52,6 @@ class RegisterPageTest
         _registerPage.FillRegisterInformation(userName, mail, password);
         _registerPage.ClickRegisterButton();
 
-        boolean isExistingAccount = _registerPage.IsAccountExistingAlready();
-        _page.screenshot(new Page.ScreenshotOptions().setFullPage(true).setPath(Paths.get("fail.jpg")));
-        assertTrue(isExistingAccount);
+        _registerPage.AssertAccountAlreadyExists();
     }
 }

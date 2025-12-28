@@ -2,9 +2,12 @@ package me.venomts.pages;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.assertions.LocatorAssertions;
 import com.microsoft.playwright.options.AriaRole;
 
 import java.nio.file.Paths;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public class RegisterPage
 {
@@ -38,16 +41,14 @@ public class RegisterPage
         _createAccountButton.click();
     }
 
-    public boolean IsAccountCreated()
+    public void AssertAccountCreated()
     {
-        _registerAlert.waitFor();
-        return _registerAlert.textContent().contains("You must activate your account before logging in.");
+        assertThat(_registerAlert).containsText("You must activate your account before logging in.");
     }
 
-    public boolean IsAccountExistingAlready()
+    public void AssertAccountAlreadyExists()
     {
-        _registerAlert.waitFor();
-        return _registerAlert.textContent().contains("An account with this username and/or email address already exists");
+        assertThat(_registerAlert).containsText("An account with this username and/or email address already exists");
     }
 
 
