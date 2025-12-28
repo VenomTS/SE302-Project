@@ -1,6 +1,15 @@
-﻿package me.venomts.pages;
+package me.venomts.pages;
+
+import org.junit.jupiter.api.Test;
 
 public class LoginPageTest
 {
- int b;
+    @Test
+    public void LoginTest()
+    {
+        /*
+        LoginPage.Login("ime", "password");
+        LoginPage.AssertUserLoggedIn();
+         */
+    }
 }

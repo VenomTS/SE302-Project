@@ -12,7 +12,7 @@ public class CardDatabasePage
 
     private Locator _filterAttribute;
     private Locator _filterRace;
-    private Locator _AdvancedFiltersButton;
+    private Locator _advancedFiltersButton;
 
 
     public CardDatabasePage(Page page)
@@ -20,24 +20,19 @@ public class CardDatabasePage
         this.page = page;
         _filterAttribute = page.locator("#filter-attribute");
         _filterRace = page.locator("#filter-race");
-        _AdvancedFiltersButton = page.locator(".btn.btn-primary.filterlimit ");
+        _advancedFiltersButton = page.locator(".btn.btn-primary.filterlimit");
     }
 
     //Used only inside this class:
-    public void ToggleAdvancedFiltersButton()
+    private void ToggleAdvancedFiltersButton()
     {
-        String filterButtonExpanded = _AdvancedFiltersButton.getAttribute("aria-expanded");
-        if ("false".equals(filterButtonExpanded))
-            _AdvancedFiltersButton.click();
+        _advancedFiltersButton.click();
     }
     //In actual tests:
     public void SelectAttribute(String attribute)
     {
         ToggleAdvancedFiltersButton();
-        _filterAttribute.click();
-        Locator attributeL = _filterAttribute.getByText(attribute);
-        attributeL.waitFor();
-        attributeL.click();
+        _filterAttribute.selectOption(attribute);
     }
     //In actual tests:
     public void SelectRace(String race)
