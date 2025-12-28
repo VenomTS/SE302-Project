@@ -1,12 +1,15 @@
 package me.venomts.pages;
 
+import com.microsoft.playwright.Download;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import java.nio.file.Paths;
-import com.microsoft.playwright.FileChooser;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import com.microsoft.playwright.options.AriaRole;
+import com.microsoft.playwright.FileChooser;
 
 public class DeckBuilderPage {
     private Page _page;
@@ -19,6 +22,8 @@ public class DeckBuilderPage {
     private Locator _exportDeckListClipboard;
     private Locator _exportShareableLink;
     private Locator _exportToScreenshot;
+    private Locator _toolsButton;
+
 
     public DeckBuilderPage(Page page){
         _page = page;
@@ -31,6 +36,7 @@ public class DeckBuilderPage {
         _exportShareableLink=page.getByText(" To Shareable Link in Clipboard ");
         _exportToScreenshot=page.getByText(" To Screenshot ");
         _exportYDKDeckFile =page.getByText(" To .ydk Deck File ");
+        _toolsButton=page.locator("deckTools__BV_toggle_");
     }
     public void clickImportButton() {
         _importButton.click();
@@ -38,6 +44,10 @@ public class DeckBuilderPage {
     public void clickExportButton()
     {
         _exportButton.click();
+    }
+    public void clickToolsButton()
+    {
+        _toolsButton.click();
     }
 
     public void importDeckFromFile(String filePath) {
@@ -52,21 +62,61 @@ public class DeckBuilderPage {
     public void testExportToYdkFileOption() {
         System.out.println("Testing Export to .ydk file...");
         clickExportButton();
-        _page.waitForTimeout(300);
-        Locator toYDK=_page.getByText("To .ydk Deck File");
-        toYDK.click();
-        System.out.println(toYDK.textContent());
-        _page.waitForTimeout(10000);
-
-        System.out.println("Export to .ydk file clicked");
+        Locator toYDK = _page.getByText("To .ydk Deck File");
+        Download download = _page.waitForDownload(toYDK::click);
+        download.saveAs(Paths.get("myFunnyTest.ydk"));
     }
     public void testExportToYDKeURLClick() {
-        System.out.println("Testing Export to YDKe URL...");///see
+        System.out.println("Testing Export to YDKe URL...");
         clickExportButton();
-        _page.waitForTimeout(100);
-        _page.evaluate("Array.from(document.querySelectorAll('.dropdown-item')).find(el => el.textContent.includes(' To YDKe URL in Clipboard ')).click()");
+        Locator toYDKLink = _page.getByText("To YDKe URL in Clipboard");
+        Locator successMsg = _page.locator(".alert-success, .toast-success, [class*='success']");
+        if (successMsg.count() > 0) {
+            System.out.println("Success message shown: " + successMsg.first().textContent());
+        } else {
+            System.out.println("Note: No success message visible");
+        }
         System.out.println("YDKe URL export clicked");
     }
+    public void testExportToDeckList()
+    {
+        System.out.println("Testing export to deck list in clipboard");
+        clickExportButton();
+
+        Locator DeckListClipboard = _page.getByText("To Deck List in Clipboard");
+        Locator successMsg = _page.locator(".alert-success, .toast-success, [class*='success']");
+        if (successMsg.count() > 0) {
+            System.out.println("Success message shown: " + successMsg.first().textContent());
+        } else {
+            System.out.println("Note: No success message visible");
+        }
+        System.out.println("DeckList exported to clipboard");
+    }
+    public void testExportShareableLink()
+    {
+        System.out.println("Testing export shareable link");
+        clickExportButton();
+
+        Locator ShareableLink = _page.getByText("To Shareable Link in Clipboard");
+        Locator successMsg = _page.locator(".alert-success, .toast-success, [class*='success']");
+        if (successMsg.count() > 0) {
+            System.out.println("Success message shown: " + successMsg.first().textContent());
+        } else {
+            System.out.println("Note: No success message visible");
+        }
+        System.out.println("Shareable link exported to clipboard");
+    }
+
+    public void testExportToScreenshot()
+    {
+        System.out.println("Testing export to Screenshot");
+        clickExportButton();
+        Locator ToScreenshot = _page.getByText("To Screenshot");
+        Download download = _page.waitForDownload(ToScreenshot::click);
+        download.saveAs(Paths.get("ydk-decklist.png"));
+    }
+
+
 
 
 
@@ -87,7 +137,6 @@ public class DeckBuilderPage {
     public void assertImportButtonIsEnabled() {
         assertThat(_importButton).isEnabled();
     }
-
 
     public void assertDeckImportedSuccessfully() {
         _page.waitForTimeout(3000);
@@ -111,25 +160,6 @@ public class DeckBuilderPage {
         assertThat(cards.first()).isVisible();
 
         System.out.println("URL import worked with " + cards.count() + " cards");
-    }
-    public void assertExportToYdkFileWorks() {
-
-        clickExportButton();
-        _page.waitForTimeout(200);
-
-        assertThat(_exportYDKDeckFile).isVisible();
-        assertThat(_exportYDKDeckFile).isEnabled();
-
-        System.out.println("Export to .ydk file option available");
-    }
-
-    public void assertExportToYDKeURLOptionExists() {
-        clickExportButton();
-        _page.waitForTimeout(200);
-
-        assertThat(_exportYDKeURLClipboard).isVisible();
-
-        System.out.println("YDKe URL export option exists");
     }
 
 

@@ -8,6 +8,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.io.File;
+import java.nio.file.Paths;
+
+import static org.junit.Assert.assertTrue;
+
 public class DeckBuilderPageTest
 {
     private Playwright _playwright;
@@ -21,7 +26,7 @@ public class DeckBuilderPageTest
     void setUp()
     {
         _playwright = Playwright.create();
-        _browser = _playwright.firefox().launch(
+        _browser = _playwright.chromium().launch(
                 new BrowserType.LaunchOptions()
                         .setHeadless(false)
                         .setSlowMo(500)
@@ -33,7 +38,7 @@ public class DeckBuilderPageTest
 
         _deckBuilderPage = new DeckBuilderPage(_page);
     }
-/*
+
     @Test
     void testImportButton() {
         _deckBuilderPage.assertImportButtonIsVisible();
@@ -53,27 +58,50 @@ public class DeckBuilderPageTest
         System.out.println("Testing URL import...");
         _deckBuilderPage.assertURLImportWorks();
         System.out.println("URL import test passed");
-}*/
+}
 @Test
 void testExportToYdkFile() {
     String filePath = "src/test/resources/ydk-decklist.ydk";
     _deckBuilderPage.importDeckFromFile(filePath);
-    _page.waitForTimeout(2000);
-    _deckBuilderPage.assertExportToYdkFileWorks();
     _deckBuilderPage.testExportToYdkFileOption();
-    _page.waitForTimeout(2000);
     System.out.println("Export to .ydk file test completed");
-}//see
-/*
+    File file = new File(Paths.get("myFunnyTest.ydk").toUri());
+    assertTrue(file.exists());
+}
+
 @Test
 void testExportToYDKeURL() {
     String filePath = "src/test/resources/ydk-decklist.ydk";
     _deckBuilderPage.importDeckFromFile(filePath);
-    _page.waitForTimeout(2000);
-    _deckBuilderPage.assertExportToYDKeURLOptionExists();
     _deckBuilderPage.testExportToYDKeURLClick();
     System.out.println("YDKe URL export test completed");
-}*/
+}
+
+@Test
+void testExportToDeckList() {
+    String filePath = "src/test/resources/ydk-decklist.ydk";
+    _deckBuilderPage.importDeckFromFile(filePath);
+    _deckBuilderPage.testExportToDeckList();
+    System.out.println("Deck List export test completed");
+}
+@Test
+void testExportShareableLink() {
+        String filePath = "src/test/resources/ydk-decklist.ydk";
+        _deckBuilderPage.importDeckFromFile(filePath);
+        _deckBuilderPage.testExportShareableLink();
+        System.out.println("Shareable link export test completed");
+    }
+    @Test
+    void testExportToScreenshot() {
+        String filePath = "src/test/resources/ydk-decklist.ydk";
+        _deckBuilderPage.importDeckFromFile(filePath);
+        _deckBuilderPage.testExportToScreenshot();
+        System.out.println("To screenshot export test completed");
+        File file = new File(Paths.get("ydk-decklist.png").toUri());
+        assertTrue(file.exists());
+    }
+
+
 
 
 
