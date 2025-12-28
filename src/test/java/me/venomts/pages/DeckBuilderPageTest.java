@@ -101,6 +101,16 @@ void testExportShareableLink() {
         assertTrue(file.exists());
     }
 
+    @Test
+    void testSimulateStartHand() {
+       /* String filePath = "src/test/resources/ydk-decklist.ydk";
+
+        _deckBuilderPage.importDeckFromFile(filePath);*/
+        _deckBuilderPage.simulateStartHand();
+
+    }
+
+
 
 
 

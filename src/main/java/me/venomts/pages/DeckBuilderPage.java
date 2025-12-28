@@ -5,9 +5,7 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
 
 import com.microsoft.playwright.FileChooser;
 
@@ -36,7 +34,7 @@ public class DeckBuilderPage {
         _exportShareableLink=page.getByText(" To Shareable Link in Clipboard ");
         _exportToScreenshot=page.getByText(" To Screenshot ");
         _exportYDKDeckFile =page.getByText(" To .ydk Deck File ");
-        _toolsButton=page.locator("deckTools__BV_toggle_");
+        _toolsButton=page.locator("EdeckTools__BV_toggle_");
     }
     public void clickImportButton() {
         _importButton.click();
@@ -116,6 +114,14 @@ public class DeckBuilderPage {
         download.saveAs(Paths.get("ydk-decklist.png"));
     }
 
+    public void simulateStartHand()
+    {
+        System.out.println("testing simulate start-hand");
+        clickToolsButton();
+
+        Locator StartHand = _page.getByText("Simulate Start-Hand");
+
+    }
 
 
 
