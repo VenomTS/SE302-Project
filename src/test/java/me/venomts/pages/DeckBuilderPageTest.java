@@ -33,7 +33,7 @@ public class DeckBuilderPageTest
 
         _deckBuilderPage = new DeckBuilderPage(_page);
     }
-    /*
+/*
     @Test
     void testImportButton() {
         _deckBuilderPage.assertImportButtonIsVisible();
@@ -41,22 +41,39 @@ public class DeckBuilderPageTest
     }
 
     @Test
-    void testDropdownOptions() {
-        _deckBuilderPage.assertDropdownOpensWithOptions();
+    void testImportActualDeckFile() {
+        String filePath = "src/test/resources/ydk-decklist.ydk";
+        _deckBuilderPage.importDeckFromFile(filePath);
+        _deckBuilderPage.assertDeckImportedSuccessfully();
+        System.out.println("Deck file imported!");
     }
 
     @Test
-    void testImportFromFile() {
-        _deckBuilderPage.assertImportFromFileOptionClickable();
-    }
-
-    @Test
-    void testImportFromURL() {
-        _deckBuilderPage.assertImportFromURLOptionClickable();
-    }
-    */
-
-
+    void testURLImportWorks() {
+        System.out.println("Testing URL import...");
+        _deckBuilderPage.assertURLImportWorks();
+        System.out.println("URL import test passed");
+}*/
+@Test
+void testExportToYdkFile() {
+    String filePath = "src/test/resources/ydk-decklist.ydk";
+    _deckBuilderPage.importDeckFromFile(filePath);
+    _page.waitForTimeout(2000);
+    _deckBuilderPage.assertExportToYdkFileWorks();
+    _deckBuilderPage.testExportToYdkFileOption();
+    _page.waitForTimeout(2000);
+    System.out.println("Export to .ydk file test completed");
+}
+/*
+@Test
+void testExportToYDKeURL() {
+    String filePath = "src/test/resources/ydk-decklist.ydk";
+    _deckBuilderPage.importDeckFromFile(filePath);
+    _page.waitForTimeout(2000);
+    _deckBuilderPage.assertExportToYDKeURLOptionExists();
+    _deckBuilderPage.testExportToYDKeURLClick();
+    System.out.println("YDKe URL export test completed");
+}*/
 
 
 
