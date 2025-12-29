@@ -34,7 +34,7 @@ public class DeckBuilderPage {
         _exportShareableLink=page.getByText(" To Shareable Link in Clipboard ");
         _exportToScreenshot=page.getByText(" To Screenshot ");
         _exportYDKDeckFile =page.getByText(" To .ydk Deck File ");
-        _toolsButton=page.locator("EdeckTools__BV_toggle_");
+        _toolsButton=page.locator("#deckTools__BV_toggle_");
     }
     public void clickImportButton() {
         _importButton.click();
@@ -118,8 +118,9 @@ public class DeckBuilderPage {
     {
         System.out.println("testing simulate start-hand");
         clickToolsButton();
-
         Locator StartHand = _page.getByText("Simulate Start-Hand");
+        StartHand.click();
+        _page.waitForTimeout(500);
 
     }
 
@@ -167,7 +168,11 @@ public class DeckBuilderPage {
 
         System.out.println("URL import worked with " + cards.count() + " cards");
     }
-
+    public void assertStartHandDrawn() {
+        Locator drawnCards = _page.locator(".draw-sim__output__card");
+        assertThat(drawnCards).hasCount(5);
+        System.out.println("Start hand drawn with " + drawnCards.count() + " cards");
+    }
 
 
 
