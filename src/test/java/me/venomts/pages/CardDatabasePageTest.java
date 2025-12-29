@@ -28,11 +28,28 @@ class CardDatabasePageTest
     }
 
     @Test
-    void testMenus()
+    void TestSorting()
+    {
+        _cardDatabasePage.ResetFilters();
+        _cardDatabasePage.SelectLanguage("Deutsch");
+        _cardDatabasePage.SelectSortDirection("DESC");
+        _cardDatabasePage.AssertSortsApplied();
+    }
+
+    @Test
+    void TestMenus()
     {
         _cardDatabasePage.SelectAttribute("DIVINE");
         _cardDatabasePage.SelectRace("Aqua");
         _cardDatabasePage.AssertFiltersApplied();
+    }
+
+    @Test
+    void TestInputFields()
+    {
+        _cardDatabasePage.SelectAttackRange("1000");
+        _cardDatabasePage.SelectLevel("5");
+        _cardDatabasePage.AssertFieldsApplied();
     }
 
 }
