@@ -110,6 +110,21 @@ void testExportShareableLink() {
         System.out.println("Success!");
 
     }
+    @Test
+    void testFilterByName()
+    {
+        String cardName="asg";
+        _deckBuilderPage.testFilterByName(cardName);
+        _deckBuilderPage.assertFilterChangesCount();
+    }
+    @Test
+    void testClear()
+    {
+        String filePath = "src/test/resources/ydk-decklist.ydk";
+        _deckBuilderPage.importDeckFromFile(filePath);
+        _deckBuilderPage.testClearButton();
+        _deckBuilderPage.assertClearButton();
+    }
 
 
 

@@ -1,13 +1,9 @@
 package me.venomts.pages;
 
-import com.microsoft.playwright.Download;
-import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Page;
+import com.microsoft.playwright.*;
+
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import java.nio.file.Paths;
-
-
-import com.microsoft.playwright.FileChooser;
 
 public class DeckBuilderPage {
     private Page _page;
@@ -21,7 +17,8 @@ public class DeckBuilderPage {
     private Locator _exportShareableLink;
     private Locator _exportToScreenshot;
     private Locator _toolsButton;
-
+    private Locator _filterButton;
+    private Locator _editButton;
 
     public DeckBuilderPage(Page page){
         _page = page;
@@ -35,6 +32,8 @@ public class DeckBuilderPage {
         _exportToScreenshot=page.getByText(" To Screenshot ");
         _exportYDKDeckFile =page.getByText(" To .ydk Deck File ");
         _toolsButton=page.locator("#deckTools__BV_toggle_");
+        _filterButton=page.locator(".btn.btn-primary.collapsed");
+        _editButton=page.locator("#deckEdit__BV_toggle_");
     }
     public void clickImportButton() {
         _importButton.click();
@@ -46,6 +45,14 @@ public class DeckBuilderPage {
     public void clickToolsButton()
     {
         _toolsButton.click();
+    }
+    public void clickFilterButton()
+    {
+        _filterButton.click();
+    }
+    public void clickEditButton()
+    {
+        _editButton.click();
     }
 
     public void importDeckFromFile(String filePath) {
@@ -120,8 +127,23 @@ public class DeckBuilderPage {
         clickToolsButton();
         Locator StartHand = _page.getByText("Simulate Start-Hand");
         StartHand.click();
-        _page.waitForTimeout(500);
-
+        _page.waitForTimeout(100);
+    }
+    public void testFilterByName(String cardName)
+    {
+        clickFilterButton();
+        Locator nameInput = _page.locator("#v-3");
+        nameInput.fill(cardName);
+        _page.waitForTimeout(150);
+    }
+    public void testClearButton()
+    {
+        clickEditButton();
+        Locator clearButton = _page.getByText("Clear");
+        clearButton.click();
+        //_page.onDialog(Dialog::accept);
+        Locator OK =_page.locator("#clearDeck___BV_modal_footer_ > .btn.btn-primary");
+        OK.click();
     }
 
 
@@ -172,6 +194,19 @@ public class DeckBuilderPage {
         Locator drawnCards = _page.locator(".draw-sim__output__card");
         assertThat(drawnCards).hasCount(5);
         System.out.println("Start hand drawn with " + drawnCards.count() + " cards");
+    }
+    public void assertFilterChangesCount() {
+        Locator result = _page.locator(".builder__count");
+        System.out.println(result.textContent());
+        String resultText = result.innerText();
+        assertThat(result).not().containsText("13941 of 13941");
+    }
+    public void assertClearButton()
+    {
+        Locator mainDeck=_page.locator(".deck-part.deck-part--main");
+        Locator cards=mainDeck.locator(".deck-part__stats");
+        assertThat(cards).containsText("0 Cards");
+
     }
 
 
