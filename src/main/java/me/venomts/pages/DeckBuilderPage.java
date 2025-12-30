@@ -1,6 +1,7 @@
 package me.venomts.pages;
 
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.assertions.LocatorAssertions;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import java.nio.file.Paths;
@@ -141,11 +142,26 @@ public class DeckBuilderPage {
         clickEditButton();
         Locator clearButton = _page.getByText("Clear");
         clearButton.click();
-        //_page.onDialog(Dialog::accept);
         Locator OK =_page.locator("#clearDeck___BV_modal_footer_ > .btn.btn-primary");
         OK.click();
     }
+    public void testRandomize()
+    {
+        clickToolsButton();
+        Locator randomizeButton = _page.getByText("Randomize", new Page.GetByTextOptions().setExact(true));
+        randomizeButton.click();
 
+    }
+    public void testDragToMainDeck()
+    {
+        Locator cardList=_page.getByAltText("Blue-Eyes White Dragon");
+        cardList.hover();
+        _page.mouse().down();
+        Locator mainDeck=_page.locator("div[data-deck-part-area='main']");
+        mainDeck.hover();
+        _page.mouse().up();
+
+    }
 
 
 
@@ -206,9 +222,21 @@ public class DeckBuilderPage {
         Locator mainDeck=_page.locator(".deck-part.deck-part--main");
         Locator cards=mainDeck.locator(".deck-part__stats");
         assertThat(cards).containsText("0 Cards");
-
     }
-
-
+    public void assertRandomizeButton()
+    {
+        Locator mainDeck=_page.locator(".deck-part.deck-part--main");
+        Locator cards=mainDeck.locator(".deck-part__stats");
+        System.out.println(cards.textContent());
+        assertThat(cards).not().hasText("0 Cards");
+    }
+    public void assertDragToMain()
+    {
+        Locator mainDeck=_page.locator(".deck-part.deck-part--main");
+        Locator cards=mainDeck.locator(".deck-part__stats");
+        System.out.println(cards.textContent());
+        assertThat(cards).not().containsText("0 Cards");
+        _page.waitForTimeout(1000);
+    }
 
 }

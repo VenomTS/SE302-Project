@@ -29,7 +29,7 @@ public class DeckBuilderPageTest
         _browser = _playwright.chromium().launch(
                 new BrowserType.LaunchOptions()
                         .setHeadless(false)
-                        .setSlowMo(500)
+                        .setSlowMo(560)
         );
         _page = _browser.newPage();
 
@@ -125,7 +125,18 @@ void testExportShareableLink() {
         _deckBuilderPage.testClearButton();
         _deckBuilderPage.assertClearButton();
     }
-
+    @Test
+    void testRandomizeButton()
+    {
+        _deckBuilderPage.testRandomize();
+        _deckBuilderPage.assertRandomizeButton();
+    }
+    @Test
+    void testDragToMainDeck()
+    {
+        _deckBuilderPage.testDragToMainDeck();
+        _deckBuilderPage.assertDragToMain();
+    }
 
 
 
