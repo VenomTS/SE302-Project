@@ -1,0 +1,32 @@
+package me.venomts.enums;
+
+public enum Type
+{
+    Select__Race,
+    Aqua,
+    Beast,
+    Beast_Warrior,
+    Creator__God,
+    Cyberse,
+    Dinosaur,
+    Divine_Beast,
+    Dragon,
+    Fairy,
+    Fiend,
+    Fish,
+    Insect,
+    Illusion,
+    Machine,
+    Plant,
+    Psychic,
+    Pyro,
+    Reptile,
+    Rock,
+    Sea__Serpent,
+    Spellcaster,
+    Thunder,
+    Warrior,
+    Winged__Beast,
+    Wyrm,
+    Zombie,
+}

@@ -1,55 +1,70 @@
 package me.venomts.pages;
 
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
+import com.microsoft.playwright.*;
+import me.venomts.BrowserSettings;
+import me.venomts.enums.*;
+import org.junit.jupiter.api.*;
+
+import static org.junit.Assert.assertTrue;
 
 class CardDatabasePageTest
 {
-    private Playwright _playwright;
-    private Browser _browser;
+    private static final String PageURL = "https://ygoprodeck.com/card-database/";
+
+    private static Playwright _playwright;
+    private static Browser _browser;
+    private BrowserContext _context;
     private Page _page;
-    private static final String CardDatabaseURL = "https://ygoprodeck.com/card-database/?num=24&offset=0";
     private CardDatabasePage _cardDatabasePage;
 
-    @BeforeEach
-    public void CardDatabaseSetUp()
+    @BeforeAll
+    static void LaunchBrowser()
     {
         _playwright = Playwright.create();
-        _browser = _playwright.chromium().launch(new BrowserType.LaunchOptions().setSlowMo(500).setHeadless(false));
-        _page = _browser.newPage();
+        _browser = _playwright.chromium().launch(BrowserSettings.LaunchOptions);
+    }
 
-        _page.navigate(CardDatabaseURL);
-        _page.waitForURL(CardDatabaseURL);
+    @AfterAll
+    static void CloseBrowser()
+    {
+        _playwright.close();
+    }
+
+    @BeforeEach
+    void CreateContextAndPage()
+    {
+        _context = _browser.newContext();
+        _page = _context.newPage();
+        _page.navigate(PageURL);
         _cardDatabasePage = new CardDatabasePage(_page);
     }
 
-    @Test
-    void TestSorting()
+    @AfterEach
+    void CloseContext()
     {
+        _context.close();
+    }
+
+    @Test
+    void CardFilteringTest()
+    {
+        _cardDatabasePage.ApplyFilter("Malebranche", Attribute.Dark, Type.Fiend, 1000, 0, 3, 0, 0, Language.English, SortBy.DEF, false);
+        assertTrue(_cardDatabasePage.IsFilterApplied());
+    }
+
+    @Test
+    void SetLimitTest()
+    {
+        _cardDatabasePage.SetLimit(FilterLimit.Limit__50);
+        _cardDatabasePage.AssertLimitSet();
+    }
+
+    @Test
+    void ResetFiltersTest()
+    {
+        SetLimitTest();
+        CardFilteringTest();
         _cardDatabasePage.ResetFilters();
-        _cardDatabasePage.SelectLanguage("Deutsch");
-        _cardDatabasePage.SelectSortDirection("DESC");
-        _cardDatabasePage.AssertSortsApplied();
+        assertTrue(_cardDatabasePage.IsFilterReset());
     }
-
-    @Test
-    void TestMenus()
-    {
-        _cardDatabasePage.SelectAttribute("DIVINE");
-        _cardDatabasePage.SelectRace("Aqua");
-        _cardDatabasePage.AssertFiltersApplied();
-    }
-
-    @Test
-    void TestInputFields()
-    {
-        _cardDatabasePage.SelectAttackRange("1000");
-        _cardDatabasePage.SelectLevel("5");
-        _cardDatabasePage.AssertFieldsApplied();
-    }
-
 }

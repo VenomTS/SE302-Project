@@ -1,6 +1,7 @@
 package me.venomts.pages;
 
 import com.microsoft.playwright.*;
+import me.venomts.BrowserSettings;
 import org.junit.jupiter.api.*;
 
 import static org.junit.Assert.assertFalse;
@@ -8,12 +9,7 @@ import static org.junit.Assert.assertFalse;
 class RegisterPageTest
 {
     // NOTE: Tests may FAIL due to Captcha system that the site uses to prevent bot activity
-
     private static final String PageURL = "https://ygoprodeck.com/register/";
-    private static final boolean IsHeadlessBrowser = false;
-    private static final int BrowserDelay = 500;
-    private static final int BrowserTimeout = 100000;
-    private static final BrowserType.LaunchOptions LaunchOptions = new BrowserType.LaunchOptions().setHeadless(IsHeadlessBrowser).setSlowMo(BrowserDelay);
 
     private static Playwright _playwright;
     private static Browser _browser;
@@ -25,7 +21,7 @@ class RegisterPageTest
     static void LaunchBrowser()
     {
         _playwright = Playwright.create();
-        _browser = _playwright.chromium().launch(LaunchOptions);
+        _browser = _playwright.chromium().launch(BrowserSettings.LaunchOptions);
     }
 
     @AfterAll
