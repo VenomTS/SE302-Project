@@ -1,57 +1,122 @@
 package me.venomts.pages;
 
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
+import com.microsoft.playwright.*;
+import org.junit.jupiter.api.*;
+
+import static org.junit.Assert.assertFalse;
 
 class RegisterPageTest
 {
-    private Playwright _playwright;
-    private Browser _browser;
+    // NOTE: Tests may FAIL due to Captcha system that the site uses to prevent bot activity
+
+    private static final String PageURL = "https://ygoprodeck.com/register/";
+    private static final boolean IsHeadlessBrowser = false;
+    private static final int BrowserDelay = 500;
+    private static final int BrowserTimeout = 100000;
+    private static final BrowserType.LaunchOptions LaunchOptions = new BrowserType.LaunchOptions().setHeadless(IsHeadlessBrowser).setSlowMo(BrowserDelay);
+
+    private static Playwright _playwright;
+    private static Browser _browser;
+    private BrowserContext _context;
     private Page _page;
     private RegisterPage _registerPage;
 
-    private static final String PageURL = "https://ygoprodeck.com/register/";
-
-    @BeforeEach
-    void setUp()
+    @BeforeAll
+    static void LaunchBrowser()
     {
         _playwright = Playwright.create();
-        _browser = _playwright.firefox().launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(500));
-        _page = _browser.newPage();
+        _browser = _playwright.chromium().launch(LaunchOptions);
+    }
 
+    @AfterAll
+    static void CloseBrowser()
+    {
+        _playwright.close();
+    }
+
+    @BeforeEach
+    void CreateContextAndPage()
+    {
+        _context = _browser.newContext();
+        _page = _context.newPage();
         _page.navigate(PageURL);
-        _page.waitForURL(PageURL);
-
         _registerPage = new RegisterPage(_page);
     }
 
-    @Test
-    void RegisterNewAccount()
+    @AfterEach
+    void CloseContext()
     {
-        String userName = "Some Testing Username";
-        String mail = "Some Testing Mail";
-        String password = "Some Testing Password";
+        _context.close();
+    }
 
-        _registerPage.FillRegisterInformation(userName, mail, password);
-        _registerPage.ClickRegisterButton();
+    @Test
+    void RegisterNewAccountTest()
+    {
+        String displayName = "SoftwareTestingAndMaintenance";
+        String mail = "the.waster.mail@gmail.com";
+        String password = "SoftwareTesting123!";
 
+        _registerPage.Register(displayName, mail, password);
         _registerPage.AssertAccountCreated();
     }
 
     @Test
-    void RegisterExistingAccount()
+    void AccountAlreadyExistsTest()
     {
-        String userName = "Kaibaman";
-        String mail = "meandyou@wearetestingthis.com";
-        String password = "VeryStrangeLookingPassword";
-
-        _registerPage.FillRegisterInformation(userName, mail, password);
-        _registerPage.ClickRegisterButton();
-
+        String displayName = "Kaibaman";
+        String mail = "seto@kaibacorp.com";
+        String password = "GoodPassword123";
+        _registerPage.Register(displayName, mail, password);
         _registerPage.AssertAccountAlreadyExists();
+    }
+
+    @Test
+    void UsernameContainsInvalidCharactersTest()
+    {
+        String displayName = "Kaibaman!";
+        String mail = "seto@kaibacorp.com";
+        String password = "GoodPassword123";
+        _registerPage.Register(displayName, mail, password);
+        _registerPage.AssertUsernameContainsInvalidCharacters();
+    }
+
+    @Test
+    void ShortPasswordTest()
+    {
+        String displayName = "Kaibaman";
+        String mail = "seto@kaibacorp.com";
+        String password = "1234";
+        _registerPage.Register(displayName, mail, password);
+        String errorMessage = _registerPage.GetPasswordErrorMessage();
+        assertFalse(errorMessage.isEmpty());
+    }
+
+    @Test
+    void PasswordMismatchTest()
+    {
+        String displayName = "Kaibaman";
+        String mail = "seto@kaibacorp.com";
+        String password = "GoodPassword";
+        String confirmPassword = "BadPassword";
+        _registerPage.Register(displayName, mail, password, confirmPassword);
+        _registerPage.AssertPasswordMismatch();
+    }
+
+    @Test
+    void GoToLoginTest()
+    {
+        _registerPage.GoToLogIn();
+        _registerPage.AssertLoginRedirect();
+    }
+
+    @Test
+    void InvalidMailTest()
+    {
+        String displayName = "Kaibaman";
+        String mail = "seto@.com";
+        String password = "12345";
+        _registerPage.Register(displayName, mail, password);
+        String errorMessage = _registerPage.GetMailErrorMessage();
+        assertFalse(errorMessage.isEmpty());
     }
 }
