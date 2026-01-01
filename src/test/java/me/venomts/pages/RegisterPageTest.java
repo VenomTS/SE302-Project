@@ -14,7 +14,6 @@ class RegisterPageTest
     private static Playwright _playwright;
     private static Browser _browser;
     private BrowserContext _context;
-    private Page _page;
     private RegisterPage _registerPage;
 
     @BeforeAll
@@ -34,7 +33,7 @@ class RegisterPageTest
     void CreateContextAndPage()
     {
         _context = _browser.newContext();
-        _page = _context.newPage();
+        Page _page = _context.newPage();
         _page.navigate(PageURL);
         _registerPage = new RegisterPage(_page);
     }
@@ -45,9 +44,8 @@ class RegisterPageTest
         _context.close();
     }
 
-
-    // This test requires a slower approach due to Captcha, so the settings need to be tuned
     @Test
+    // @Disabled - Disable this test when running or use different credentials below since ones below will be used for presenting
     void RegisterNewAccountTest()
     {
         String displayName = "SoftwareTestingAndMaintenanceUnused";

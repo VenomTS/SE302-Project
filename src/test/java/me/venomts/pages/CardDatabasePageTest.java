@@ -14,7 +14,6 @@ class CardDatabasePageTest
     private static Playwright _playwright;
     private static Browser _browser;
     private BrowserContext _context;
-    private Page _page;
     private CardDatabasePage _cardDatabasePage;
 
     @BeforeAll
@@ -34,7 +33,7 @@ class CardDatabasePageTest
     void CreateContextAndPage()
     {
         _context = _browser.newContext();
-        _page = _context.newPage();
+        Page _page = _context.newPage();
         _page.navigate(PageURL);
         _cardDatabasePage = new CardDatabasePage(_page);
     }

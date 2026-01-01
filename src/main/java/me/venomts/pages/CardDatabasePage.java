@@ -13,7 +13,6 @@ public class CardDatabasePage
 {
     private final Page _page;
 
-    private final Locator _advancedFiltersButton;
     private final Locator _name;
     private final Locator _attribute;
     private final Locator _race;
@@ -38,7 +37,7 @@ public class CardDatabasePage
     public CardDatabasePage(Page page)
     {
         _page = page;
-        _advancedFiltersButton = page.locator(".btn.btn-primary.filterlimit");
+        Locator advancedFiltersButton = page.locator(".btn.btn-primary.filterlimit");
         _name = page.locator("#filter-dq");
         _attribute = page.locator("#filter-attribute");
         _race = page.locator("#filter-race");
@@ -55,7 +54,7 @@ public class CardDatabasePage
         _limit = page.locator("#filter-limit");
 
         _cardsFoundInit = _cardsFound.textContent();
-        _advancedFiltersButton.click();
+        advancedFiltersButton.click();
     }
 
     public void ApplyFilter(String name, Attribute attribute, Type type, int attack, int defense, int level, int link, int scale, Language language, SortBy sortBy, boolean isAscending)

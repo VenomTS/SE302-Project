@@ -1,7 +1,6 @@
 package me.venomts.pages;
 
 import com.microsoft.playwright.*;
-import com.microsoft.playwright.options.AriaRole;
 import me.venomts.FileManagement;
 
 import java.io.File;
@@ -129,11 +128,9 @@ public class DeckBuilderPage
         SetBaseCardsFound();
         Locator filterCardsButton = _page.locator(".btn.btn-primary.collapsed");
         Locator cardNameField = _page.locator("#v-3");
-        Locator closeButton = _page.getByRole(AriaRole.DIALOG, new Page.GetByRoleOptions().setName("Filter Cards")).getByLabel("Close");
 
         filterCardsButton.click();
         cardNameField.fill(name);
-        closeButton.click();
     }
 
     public void ResetFilter()

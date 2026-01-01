@@ -15,7 +15,6 @@ public class LoginPageTest
     private static Playwright _playwright;
     private static Browser _browser;
     private BrowserContext _context;
-    private Page _page;
     private LoginPage _loginPage;
 
     @BeforeAll
@@ -35,7 +34,7 @@ public class LoginPageTest
     void CreateContextAndPage()
     {
         _context = _browser.newContext();
-        _page = _context.newPage();
+        Page _page = _context.newPage();
         _page.navigate(PageURL);
         _loginPage = new LoginPage(_page);
     }
