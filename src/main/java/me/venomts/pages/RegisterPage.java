@@ -55,16 +55,19 @@ public class RegisterPage
 
     public void AssertAccountCreated()
     {
+        assertThat(_alert).isVisible();
         assertThat(_alert).containsText("You must activate your account before logging in.");
     }
 
     public void AssertAccountAlreadyExists()
     {
+        assertThat(_alert).isVisible();
         assertThat(_alert).containsText("An account with this username and/or email address already exists");
     }
 
     public void AssertUsernameContainsInvalidCharacters()
     {
+        assertThat(_alert).isVisible();
         assertThat(_alert).containsText("Username can only contain letters, numbers, and spaces.");
     }
 
@@ -75,6 +78,7 @@ public class RegisterPage
 
     public void AssertPasswordMismatch()
     {
+        assertThat(_alert).isVisible();
         assertThat(_alert).containsText("Passwords do not match");
     }
 

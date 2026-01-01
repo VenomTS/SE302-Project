@@ -1,12 +1,12 @@
 package me.venomts.pages;
 
 import com.microsoft.playwright.*;
-import com.microsoft.playwright.assertions.LocatorAssertions;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import java.nio.file.Paths;
 
-public class DeckBuilderPage {
+public class DeckBuilderPage
+{
     private Page _page;
     private Locator _importButton;
     private Locator _importFromFileOption;

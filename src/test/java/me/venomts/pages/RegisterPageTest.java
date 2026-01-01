@@ -45,10 +45,12 @@ class RegisterPageTest
         _context.close();
     }
 
+
+    // This test requires a slower approach due to Captcha, so the settings need to be tuned
     @Test
     void RegisterNewAccountTest()
     {
-        String displayName = "SoftwareTestingAndMaintenance";
+        String displayName = "SoftwareTestingAndMaintenanceUnused";
         String mail = "the.waster.mail@gmail.com";
         String password = "SoftwareTesting123!";
 
