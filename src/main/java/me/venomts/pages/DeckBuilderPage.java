@@ -1,242 +1,228 @@
 package me.venomts.pages;
 
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.AriaRole;
+import me.venomts.FileManagement;
+
+import java.io.File;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import java.nio.file.Paths;
 
 public class DeckBuilderPage
 {
-    private Page _page;
-    private Locator _importButton;
-    private Locator _importFromFileOption;
-    private Locator _importFromURLOption;
-    private Locator _exportButton;
-    private Locator _exportYDKDeckFile;
-    private Locator _exportYDKeURLClipboard;
-    private Locator _exportDeckListClipboard;
-    private Locator _exportShareableLink;
-    private Locator _exportToScreenshot;
-    private Locator _toolsButton;
-    private Locator _filterButton;
-    private Locator _editButton;
+    private final Page _page;
 
-    public DeckBuilderPage(Page page){
+    private final Locator _mainDeckStats;
+    private final Locator _extraDeckStats;
+    private final Locator _sideDeckStats;
+    private final Locator _mainDeckContent;
+    private final Locator _extraDeckContent;
+    private final Locator _sideDeckContent;
+
+    private final Locator _tools;
+    private final Locator _cardsFound;
+
+    private static final String CardsInDeckBase = "0 Cards";
+    private String _baseCardsFound;
+
+    public DeckBuilderPage(Page page)
+    {
         _page = page;
-        _importButton=page.locator("#deckImport__BV_toggle_");
-        _importFromFileOption=page.getByText(" From .ydk Deck File ");
-        _importFromURLOption=page.getByText(" From YDKe URL ");
-        _exportButton=page.locator("#deckExport__BV_toggle_");
-        _exportYDKeURLClipboard=page.getByText(" To YDKe URL in Clipboard ");
-        _exportDeckListClipboard=page.getByText(" To Deck List in Clipboard ");
-        _exportShareableLink=page.getByText(" To Shareable Link in Clipboard ");
-        _exportToScreenshot=page.getByText(" To Screenshot ");
-        _exportYDKDeckFile =page.getByText(" To .ydk Deck File ");
-        _toolsButton=page.locator("#deckTools__BV_toggle_");
-        _filterButton=page.locator(".btn.btn-primary.collapsed");
-        _editButton=page.locator("#deckEdit__BV_toggle_");
-    }
-    public void clickImportButton() {
-        _importButton.click();
-    }
-    public void clickExportButton()
-    {
-        _exportButton.click();
-    }
-    public void clickToolsButton()
-    {
-        _toolsButton.click();
-    }
-    public void clickFilterButton()
-    {
-        _filterButton.click();
-    }
-    public void clickEditButton()
-    {
-        _editButton.click();
+
+        _mainDeckStats = _page.locator(".deck-part--main .deck-part__stats");
+        _extraDeckStats = _page.locator(".deck-part--extra .deck-part__stats");
+        _sideDeckStats = _page.locator(".deck-part--side .deck-part__stats");
+        _mainDeckContent = _page.locator(".deck-part--main .deck-part__content");
+        _extraDeckContent = _page.locator(".deck-part--extra .deck-part__content");
+        _sideDeckContent = _page.locator(".deck-part--side .deck-part__content");
+        _tools = _page.locator("#deckTools__BV_toggle_");
+        _cardsFound = _page.locator(".builder__count");
     }
 
-    public void importDeckFromFile(String filePath) {
-        FileChooser fileChooser = _page.waitForFileChooser(() -> {
-            clickImportButton();
-            _page.locator(".dropdown-menu.show").waitFor();
+    private String GetResource(String resourceName)
+    {
+        URL fileURL = getClass().getResource(resourceName);
+        if(fileURL == null)
+            throw new RuntimeException("Could not find the resource " + resourceName);
 
-            _importFromFileOption.click();
+        return fileURL.getPath();
+    }
+
+    private void SetBaseCardsFound()
+    {
+        assertThat(_cardsFound).not().hasText("Result: 0 of 0 Cards");
+        _baseCardsFound = _cardsFound.textContent();
+    }
+
+    private Locator GetDraggableCard(String cardName)
+    {
+        SearchForCards(cardName);
+        Locator card = _page.locator(".builder-matches__match").first();
+        return card.locator(".card.builder-matches__match__card");
+    }
+
+    public void ImportYDKFile()
+    {
+        Locator importButton = _page.locator("#deckImport__BV_toggle_");
+        Locator importFromFileButton = _page.getByText("From .ydk Deck File");
+        FileChooser fileChooser = _page.waitForFileChooser(() ->
+        {
+            importButton.click();
+            importFromFileButton.click();
         });
-        fileChooser.setFiles(Paths.get(filePath));
-    }
-    public void testExportToYdkFileOption() {
-        System.out.println("Testing Export to .ydk file...");
-        clickExportButton();
-        Locator toYDK = _page.getByText("To .ydk Deck File");
-        Download download = _page.waitForDownload(toYDK::click);
-        download.saveAs(Paths.get("myFunnyTest.ydk"));
-    }
-    public void testExportToYDKeURLClick() {
-        System.out.println("Testing Export to YDKe URL...");
-        clickExportButton();
-        Locator toYDKLink = _page.getByText("To YDKe URL in Clipboard");
-        Locator successMsg = _page.locator(".alert-success, .toast-success, [class*='success']");
-        if (successMsg.count() > 0) {
-            System.out.println("Success message shown: " + successMsg.first().textContent());
-        } else {
-            System.out.println("Note: No success message visible");
+
+        try
+        {
+            String filePath = GetResource("/ImportDeck.ydk");
+            Path path = Paths.get(filePath);
+            fileChooser.setFiles(path);
         }
-        System.out.println("YDKe URL export clicked");
-    }
-    public void testExportToDeckList()
-    {
-        System.out.println("Testing export to deck list in clipboard");
-        clickExportButton();
-
-        Locator DeckListClipboard = _page.getByText("To Deck List in Clipboard");
-        Locator successMsg = _page.locator(".alert-success, .toast-success, [class*='success']");
-        if (successMsg.count() > 0) {
-            System.out.println("Success message shown: " + successMsg.first().textContent());
-        } else {
-            System.out.println("Note: No success message visible");
+        catch(RuntimeException e)
+        {
+            System.out.println(e.getMessage());
         }
-        System.out.println("DeckList exported to clipboard");
-    }
-    public void testExportShareableLink()
-    {
-        System.out.println("Testing export shareable link");
-        clickExportButton();
-
-        Locator ShareableLink = _page.getByText("To Shareable Link in Clipboard");
-        Locator successMsg = _page.locator(".alert-success, .toast-success, [class*='success']");
-        if (successMsg.count() > 0) {
-            System.out.println("Success message shown: " + successMsg.first().textContent());
-        } else {
-            System.out.println("Note: No success message visible");
-        }
-        System.out.println("Shareable link exported to clipboard");
     }
 
-    public void testExportToScreenshot()
+    public void ExportYDKFile()
     {
-        System.out.println("Testing export to Screenshot");
-        clickExportButton();
-        Locator ToScreenshot = _page.getByText("To Screenshot");
-        Download download = _page.waitForDownload(ToScreenshot::click);
-        download.saveAs(Paths.get("ydk-decklist.png"));
+        Locator exportButton = _page.locator("#deckExport__BV_toggle_");
+        Locator exportToFileButton = _page.getByText("To .ydk Deck File");
+        exportButton.click();
+
+        Download download = _page.waitForDownload(exportToFileButton::click);
+        download.saveAs(Paths.get("ExportDeck.ydk"));
     }
 
-    public void simulateStartHand()
+    public void ClearDeck()
     {
-        System.out.println("testing simulate start-hand");
-        clickToolsButton();
-        Locator StartHand = _page.getByText("Simulate Start-Hand");
-        StartHand.click();
-        _page.waitForTimeout(100);
-    }
-    public void testFilterByName(String cardName)
-    {
-        clickFilterButton();
-        Locator nameInput = _page.locator("#v-3");
-        nameInput.fill(cardName);
-        _page.waitForTimeout(150);
-    }
-    public void testClearButton()
-    {
-        clickEditButton();
-        Locator clearButton = _page.getByText("Clear");
+        Locator editButton = _page.locator("#deckEdit__BV_toggle_");
+        Locator clearButton = _page.getByText("Clear", new Page.GetByTextOptions().setExact(true));
+        editButton.click();
         clearButton.click();
-        Locator OK =_page.locator("#clearDeck___BV_modal_footer_ > .btn.btn-primary");
-        OK.click();
+
+        Locator okButton =_page.locator("#clearDeck___BV_modal_footer_ .btn.btn-primary");
+        okButton.click();
     }
-    public void testRandomize()
+
+    public void SimulateStartHand(boolean isGoingSecond)
     {
-        clickToolsButton();
+        Locator simulateStartHand = _page.getByText("Simulate Start-Hand");
+        Locator goingSecondButton = _page.getByText("Going Second", new Page.GetByTextOptions().setExact(true));
+        _tools.click();
+        simulateStartHand.click();
+        if(isGoingSecond)
+            goingSecondButton.click();
+    }
+
+    public void RandomizeDeck()
+    {
         Locator randomizeButton = _page.getByText("Randomize", new Page.GetByTextOptions().setExact(true));
+        _tools.click();
         randomizeButton.click();
-
     }
-    public void testDragToMainDeck()
+
+    public void SearchForCards(String name)
     {
-        Locator cardList=_page.getByAltText("Blue-Eyes White Dragon");
-        cardList.hover();
-        _page.mouse().down();
-        Locator mainDeck=_page.locator("div[data-deck-part-area='main']");
-        mainDeck.hover();
-        _page.mouse().up();
+        SetBaseCardsFound();
+        Locator filterCardsButton = _page.locator(".btn.btn-primary.collapsed");
+        Locator cardNameField = _page.locator("#v-3");
+        Locator closeButton = _page.getByRole(AriaRole.DIALOG, new Page.GetByRoleOptions().setName("Filter Cards")).getByLabel("Close");
 
+        filterCardsButton.click();
+        cardNameField.fill(name);
+        closeButton.click();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public void assertImportButtonIsVisible() {
-        assertThat(_importButton).isVisible();
-    }
-    public void assertImportButtonIsEnabled() {
-        assertThat(_importButton).isEnabled();
-    }
-
-    public void assertDeckImportedSuccessfully() {
-        _page.waitForTimeout(3000);
-        Locator allCards = _page.locator(".card");
-        assertThat(allCards.first()).isVisible();
-    }
-
-    public void assertURLImportWorks() {
-        _importButton.click();
-        _page.locator(".dropdown-menu.show").waitFor();
-        _importFromURLOption.click();
-        _page.waitForTimeout(1000);
-
-        Locator urlInput = _page.locator("#v-1");
-        assertThat(urlInput.first()).isVisible();
-
-        urlInput.fill("ydke://o6lXBZyFNAI=!viOnAg==!7ydRAA==!");
-
-        _page.waitForTimeout(3000);
-        Locator cards = _page.locator(".card");
-        assertThat(cards.first()).isVisible();
-
-        System.out.println("URL import worked with " + cards.count() + " cards");
-    }
-    public void assertStartHandDrawn() {
-        Locator drawnCards = _page.locator(".draw-sim__output__card");
-        assertThat(drawnCards).hasCount(5);
-        System.out.println("Start hand drawn with " + drawnCards.count() + " cards");
-    }
-    public void assertFilterChangesCount() {
-        Locator result = _page.locator(".builder__count");
-        System.out.println(result.textContent());
-        String resultText = result.innerText();
-        assertThat(result).not().containsText("13941 of 13941");
-    }
-    public void assertClearButton()
+    public void ResetFilter()
     {
-        Locator mainDeck=_page.locator(".deck-part.deck-part--main");
-        Locator cards=mainDeck.locator(".deck-part__stats");
-        assertThat(cards).containsText("0 Cards");
-    }
-    public void assertRandomizeButton()
-    {
-        Locator mainDeck=_page.locator(".deck-part.deck-part--main");
-        Locator cards=mainDeck.locator(".deck-part__stats");
-        System.out.println(cards.textContent());
-        assertThat(cards).not().hasText("0 Cards");
-    }
-    public void assertDragToMain()
-    {
-        Locator mainDeck=_page.locator(".deck-part.deck-part--main");
-        Locator cards=mainDeck.locator(".deck-part__stats");
-        System.out.println(cards.textContent());
-        assertThat(cards).not().containsText("0 Cards");
-        _page.waitForTimeout(1000);
+        Locator resetFilterButton = _page.locator(".btn.btn-danger");
+        resetFilterButton.click();
     }
 
+    public void AddToMainDeck(String cardName)
+    {
+        Locator card = GetDraggableCard(cardName);
+        _mainDeckContent.scrollIntoViewIfNeeded();
+        card.dragTo(_mainDeckContent);
+    }
+
+    public void AddToExtraDeck(String cardName)
+    {
+        Locator card = GetDraggableCard(cardName);
+        _extraDeckContent.scrollIntoViewIfNeeded();
+        card.dragTo(_extraDeckContent);
+    }
+
+    public void AddToSideDeck(String cardName)
+    {
+        Locator card = GetDraggableCard(cardName);
+        _sideDeckContent.scrollIntoViewIfNeeded();
+        card.dragTo(_sideDeckContent);
+    }
+
+    public boolean IsExportMatchImportYDKFile()
+    {
+        String originalFilePath = GetResource("/ImportDeck.ydk");
+        File originalFile = new File(originalFilePath);
+        File exportedFile = Paths.get("ExportDeck.ydk").toFile();
+
+        return FileManagement.AreFilesSame(originalFile, exportedFile);
+    }
+
+    public int GetMainDeckCardsCount()
+    {
+        Locator mainDeckContent = _page.locator(".deck-part--main .deck-part__content");
+        Locator cards = mainDeckContent.locator(".card");
+        return cards.count();
+    }
+
+    public void AssertImportYDKFile()
+    {
+        assertThat(_mainDeckStats).hasText("40 Cards (29 Monster | 8 Spell | 3 Trap)");
+        assertThat(_extraDeckStats).hasText("15 Cards (12 Fusion | 2 Link | 1 XYZ)");
+        assertThat(_sideDeckStats).hasText(CardsInDeckBase);
+    }
+
+    public void AssertDeckCleared()
+    {
+        assertThat(_mainDeckStats).hasText(CardsInDeckBase);
+        assertThat(_extraDeckStats).hasText(CardsInDeckBase);
+        assertThat(_sideDeckStats).hasText(CardsInDeckBase);
+    }
+
+    public void AssertSimulateStartHand(int count)
+    {
+        Locator hand = _page.locator(".draw-sim__output");
+        Locator cards = hand.locator(".draw-sim__output__card");
+
+        assertThat(cards).hasCount(count);
+    }
+
+    public void AssertSearchForCards()
+    {
+        assertThat(_cardsFound).not().hasText(_baseCardsFound);
+    }
+
+    public void AssertFilterReset()
+    {
+        assertThat(_cardsFound).hasText(_baseCardsFound);
+    }
+
+    public void AssertCardDraggedToMainDeck()
+    {
+        assertThat(_mainDeckStats).not().hasText(CardsInDeckBase);
+    }
+
+    public void AssertCardDraggedToExtraDeck()
+    {
+        assertThat(_extraDeckStats).not().hasText(CardsInDeckBase);
+    }
+
+    public void AssertCardDraggedToSideDeck()
+    {
+        assertThat(_sideDeckStats).not().hasText(CardsInDeckBase);
+    }
 }
