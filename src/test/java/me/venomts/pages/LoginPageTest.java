@@ -46,6 +46,7 @@ public class LoginPageTest
     }
 
     @Test
+    @DisplayName("Smoke Test")
     public void LoginExistingAccountTest()
     {
         String displayName = "SoftwareTestingAndMaintenance";

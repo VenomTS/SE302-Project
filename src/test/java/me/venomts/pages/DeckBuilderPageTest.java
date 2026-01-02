@@ -44,6 +44,7 @@ public class DeckBuilderPageTest
     }
 
     @Test
+    @DisplayName("Smoke Test")
     void ImportYDKFileTest()
     {
         _deckBuilderPage.ImportYDKFile();
@@ -51,6 +52,7 @@ public class DeckBuilderPageTest
     }
 
     @Test
+    @DisplayName("Smoke Test")
     void ExportYDKFileTest()
     {
         _deckBuilderPage.ImportYDKFile();

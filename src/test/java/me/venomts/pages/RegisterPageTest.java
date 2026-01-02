@@ -45,7 +45,8 @@ class RegisterPageTest
     }
 
     @Test
-    // @Disabled - Disable this test when running or use different credentials below since ones below will be used for presenting
+    @DisplayName("Smoke Test")
+    @Disabled // - Disable this test when running or use different credentials below since ones below will be used for presenting
     void RegisterNewAccountTest()
     {
         String displayName = "SoftwareTestingAndMaintenanceUnused";

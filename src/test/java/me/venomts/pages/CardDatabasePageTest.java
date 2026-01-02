@@ -45,6 +45,7 @@ class CardDatabasePageTest
     }
 
     @Test
+    @DisplayName("Smoke Test")
     void CardFilteringTest()
     {
         _cardDatabasePage.ApplyFilter("Malebranche", Attribute.Dark, Type.Fiend, 1000, 0, 3, 0, 0, Language.English, SortBy.DEF, false);
