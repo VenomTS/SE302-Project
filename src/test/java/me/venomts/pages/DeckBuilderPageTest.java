@@ -44,7 +44,7 @@ public class DeckBuilderPageTest
     }
 
     @Test
-    @DisplayName("Smoke Test")
+    @DisplayName("Import a Deck - Smoke Test")
     void ImportYDKFileTest()
     {
         _deckBuilderPage.ImportYDKFile();
@@ -52,7 +52,7 @@ public class DeckBuilderPageTest
     }
 
     @Test
-    @DisplayName("Smoke Test")
+    @DisplayName("Export a Deck - Smoke Test")
     void ExportYDKFileTest()
     {
         _deckBuilderPage.ImportYDKFile();
@@ -61,6 +61,7 @@ public class DeckBuilderPageTest
     }
 
     @Test
+    @DisplayName("Clear a Deck")
     void ClearDeckTest()
     {
         _deckBuilderPage.ImportYDKFile();
@@ -69,6 +70,7 @@ public class DeckBuilderPageTest
     }
 
     @Test
+    @DisplayName("Simulate Starting Hand")
     void SimulateStartHandGoingFirstTest()
     {
         _deckBuilderPage.ImportYDKFile();
@@ -77,6 +79,7 @@ public class DeckBuilderPageTest
     }
 
     @Test
+    @DisplayName("Simulate Starting Hand (Going Second)")
     void SimulateStartHandGoingSecondTest()
     {
         _deckBuilderPage.ImportYDKFile();
@@ -85,6 +88,7 @@ public class DeckBuilderPageTest
     }
 
     @Test
+    @DisplayName("Create a random deck")
     void RandomizeDeckTest()
     {
         _deckBuilderPage.RandomizeDeck();
@@ -94,6 +98,7 @@ public class DeckBuilderPageTest
     }
 
     @Test
+    @DisplayName("Search for cards (DeckBuilder)")
     void SearchForCardsTest()
     {
         _deckBuilderPage.SearchForCards("Snatchy");
@@ -101,6 +106,7 @@ public class DeckBuilderPageTest
     }
 
     @Test
+    @DisplayName("Reset Card Filters (DeckBuilder)")
     void ResetFilterTest()
     {
         _deckBuilderPage.SearchForCards("Snatchy");
@@ -110,6 +116,7 @@ public class DeckBuilderPageTest
     }
 
     @Test
+    @DisplayName("Add Card to Main Deck by Dragging")
     void DragToMainDeckTest()
     {
         _deckBuilderPage.AddToMainDeck("Cupsy");
@@ -117,6 +124,7 @@ public class DeckBuilderPageTest
     }
 
     @Test
+    @DisplayName("Add Card to Extra Deck by Dragging")
     void DragToExtraDeckTest()
     {
         _deckBuilderPage.AddToExtraDeck("Snatchy");
@@ -124,6 +132,7 @@ public class DeckBuilderPageTest
     }
 
     @Test
+    @DisplayName("Add Card to Side Deck by Dragging")
     void DragToSideDeckTest()
     {
         _deckBuilderPage.AddToSideDeck("Yummyusment");

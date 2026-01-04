@@ -45,7 +45,7 @@ class CardDatabasePageTest
     }
 
     @Test
-    @DisplayName("Smoke Test")
+    @DisplayName("Search for Cards - Smoke Test")
     void CardFilteringTest()
     {
         _cardDatabasePage.ApplyFilter("Malebranche", Attribute.Dark, Type.Fiend, 1000, 0, 3, 0, 0, Language.English, SortBy.DEF, false);
@@ -53,6 +53,7 @@ class CardDatabasePageTest
     }
 
     @Test
+    @DisplayName("Card Display Limit")
     void SetLimitTest()
     {
         _cardDatabasePage.SetLimit(FilterLimit.Limit__50);
@@ -60,6 +61,7 @@ class CardDatabasePageTest
     }
 
     @Test
+    @DisplayName("Reset Card Filters")
     void ResetFiltersTest()
     {
         SetLimitTest();

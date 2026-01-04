@@ -46,7 +46,7 @@ public class LoginPageTest
     }
 
     @Test
-    @DisplayName("Smoke Test")
+    @DisplayName("Log In with Existing Account - Smoke Test")
     public void LoginExistingAccountTest()
     {
         String displayName = "SoftwareTestingAndMaintenance";
@@ -57,6 +57,7 @@ public class LoginPageTest
     }
 
     @Test
+    @DisplayName("Login with too short Password - Negative Test")
     public void PasswordTooShortTest()
     {
         String displayName = "SoftwareTestingAndMaintenance";
@@ -66,6 +67,7 @@ public class LoginPageTest
     }
 
     @Test
+    @DisplayName("Login with Unregistered Email")
     public void InvalidMailTest()
     {
         String mail = "ovojejakodugacakmailkojivjerovatnonikonema@honeymoon.com";
@@ -75,6 +77,7 @@ public class LoginPageTest
     }
 
     @Test
+    @DisplayName("Login with Invalid Password")
     public void InvalidPasswordTest()
     {
         String mail = "SoftwareTestingAndMaintenance";
@@ -84,6 +87,7 @@ public class LoginPageTest
     }
 
     @Test
+    @DisplayName("Redirect from Register Page to Login Page")
     public void SignupRedirectTest()
     {
         _loginPage.GoToRegister();

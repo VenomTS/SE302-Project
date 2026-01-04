@@ -45,7 +45,7 @@ class RegisterPageTest
     }
 
     @Test
-    @DisplayName("Smoke Test")
+    @DisplayName("Account Registration - Smoke Test")
     @Disabled // - Disable this test when running or use different credentials below since ones below will be used for presenting
     void RegisterNewAccountTest()
     {
@@ -58,6 +58,7 @@ class RegisterPageTest
     }
 
     @Test
+    @DisplayName("Registering an Existing Account - Negative Test")
     void AccountAlreadyExistsTest()
     {
         String displayName = "Kaibaman";
@@ -68,6 +69,7 @@ class RegisterPageTest
     }
 
     @Test
+    @DisplayName("Registering with Invalid Display Name - Negative Test")
     void UsernameContainsInvalidCharactersTest()
     {
         String displayName = "Kaibaman!";
@@ -78,6 +80,7 @@ class RegisterPageTest
     }
 
     @Test
+    @DisplayName("Registering with too short Password - Negative Test")
     void ShortPasswordTest()
     {
         String displayName = "Kaibaman";
@@ -89,6 +92,7 @@ class RegisterPageTest
     }
 
     @Test
+    @DisplayName("Registering with non-matching Passwords - Negative Test")
     void PasswordMismatchTest()
     {
         String displayName = "Kaibaman";
@@ -100,6 +104,7 @@ class RegisterPageTest
     }
 
     @Test
+    @DisplayName("Redirect to Login from Register")
     void GoToLoginTest()
     {
         _registerPage.GoToLogIn();
@@ -107,6 +112,7 @@ class RegisterPageTest
     }
 
     @Test
+    @DisplayName("Registering with Invalid Email Address")
     void InvalidMailTest()
     {
         String displayName = "Kaibaman";
