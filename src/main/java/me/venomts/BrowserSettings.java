@@ -4,7 +4,7 @@ import com.microsoft.playwright.BrowserType;
 
 public class BrowserSettings
 {
-    private static final boolean IsHeadlessBrowser = true;
+    private static final boolean IsHeadlessBrowser = false;
 
     // This delay is based on ResetFiltersTest, other tests can work faster
     private static final int BrowserDelay = 500;

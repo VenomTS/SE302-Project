@@ -4,6 +4,7 @@ import com.microsoft.playwright.*;
 import me.venomts.FileManagement;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,13 +42,18 @@ public class DeckBuilderPage
         _cardsFound = _page.locator(".builder__count");
     }
 
-    private String GetResource(String resourceName)
+    private Path GetResource(String resourceName)
     {
         URL fileURL = getClass().getResource(resourceName);
         if(fileURL == null)
             throw new RuntimeException("Could not find the resource " + resourceName);
 
-        return fileURL.getPath();
+        try
+        {
+            return Paths.get(fileURL.toURI());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("Could not get the path of resource " + resourceName);
+        }
     }
 
     private void SetBaseCardsFound()
@@ -75,8 +81,7 @@ public class DeckBuilderPage
 
         try
         {
-            String filePath = GetResource("/ImportDeck.ydk");
-            Path path = Paths.get(filePath);
+            Path path = GetResource("/ImportDeck.ydk");
             fileChooser.setFiles(path);
         }
         catch(RuntimeException e)
@@ -162,8 +167,8 @@ public class DeckBuilderPage
 
     public boolean IsExportMatchImportYDKFile()
     {
-        String originalFilePath = GetResource("/ImportDeck.ydk");
-        File originalFile = new File(originalFilePath);
+        Path originalPath = GetResource("/ImportDeck.ydk");
+        File originalFile = new File(originalPath.toUri());
         File exportedFile = Paths.get("ExportDeck.ydk").toFile();
 
         return FileManagement.AreFilesSame(originalFile, exportedFile);
