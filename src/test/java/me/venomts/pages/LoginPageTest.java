@@ -15,6 +15,7 @@ public class LoginPageTest
     private static Playwright _playwright;
     private static Browser _browser;
     private BrowserContext _context;
+    private Page _page;
     private LoginPage _loginPage;
 
     @BeforeAll
@@ -34,7 +35,7 @@ public class LoginPageTest
     void CreateContextAndPage()
     {
         _context = _browser.newContext();
-        Page _page = _context.newPage();
+        _page = _context.newPage();
         _page.navigate(PageURL);
         _loginPage = new LoginPage(_page);
     }
@@ -54,6 +55,7 @@ public class LoginPageTest
 
         _loginPage.Login(displayName, password);
         _loginPage.AssertLoginSuccessful();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -64,6 +66,7 @@ public class LoginPageTest
         String password = "1234";
         _loginPage.Login(displayName, password);
         _loginPage.AssertPasswordTooShort();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -74,6 +77,7 @@ public class LoginPageTest
         String password = "OvoJeTacanPassword123";
         _loginPage.Login(mail, password);
         _loginPage.AssertInvalidCredentials();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -84,6 +88,7 @@ public class LoginPageTest
         String password = "SoftwareTesting123";
         _loginPage.Login(mail, password);
         _loginPage.AssertInvalidCredentials();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -92,5 +97,6 @@ public class LoginPageTest
     {
         _loginPage.GoToRegister();
         _loginPage.AssertRegisterRedirect();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 }

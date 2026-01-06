@@ -14,6 +14,7 @@ class RegisterPageTest
     private static Playwright _playwright;
     private static Browser _browser;
     private BrowserContext _context;
+    private Page _page;
     private RegisterPage _registerPage;
 
     @BeforeAll
@@ -33,7 +34,7 @@ class RegisterPageTest
     void CreateContextAndPage()
     {
         _context = _browser.newContext();
-        Page _page = _context.newPage();
+        _page = _context.newPage();
         _page.navigate(PageURL);
         _registerPage = new RegisterPage(_page);
     }
@@ -49,12 +50,13 @@ class RegisterPageTest
     //@Disabled // - Disable this test when running or use different credentials below since ones below will be used for presenting
     void RegisterNewAccountTest()
     {
-        String displayName = "SoftwareTestingAndMaintenanceUnused";
+        String displayName = "SoftTestAndMaintUnused";
         String mail = "the.waster.mail@gmail.com";
         String password = "SoftwareTesting123!";
 
         _registerPage.Register(displayName, mail, password);
         _registerPage.AssertAccountCreated();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -66,6 +68,7 @@ class RegisterPageTest
         String password = "GoodPassword123";
         _registerPage.Register(displayName, mail, password);
         _registerPage.AssertAccountAlreadyExists();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -77,6 +80,7 @@ class RegisterPageTest
         String password = "GoodPassword123";
         _registerPage.Register(displayName, mail, password);
         _registerPage.AssertUsernameContainsInvalidCharacters();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -89,6 +93,7 @@ class RegisterPageTest
         _registerPage.Register(displayName, mail, password);
         String errorMessage = _registerPage.GetPasswordErrorMessage();
         assertFalse(errorMessage.isEmpty());
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -101,6 +106,7 @@ class RegisterPageTest
         String confirmPassword = "BadPassword";
         _registerPage.Register(displayName, mail, password, confirmPassword);
         _registerPage.AssertPasswordMismatch();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -109,6 +115,7 @@ class RegisterPageTest
     {
         _registerPage.GoToLogIn();
         _registerPage.AssertLoginRedirect();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -121,5 +128,6 @@ class RegisterPageTest
         _registerPage.Register(displayName, mail, password);
         String errorMessage = _registerPage.GetMailErrorMessage();
         assertFalse(errorMessage.isEmpty());
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 }

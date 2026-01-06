@@ -13,6 +13,7 @@ public class DeckBuilderPageTest
     private static Playwright _playwright;
     private static Browser _browser;
     private BrowserContext _context;
+    private Page _page;
     private DeckBuilderPage _deckBuilderPage;
 
     @BeforeAll
@@ -32,7 +33,7 @@ public class DeckBuilderPageTest
     void CreateContextAndPage()
     {
         _context = _browser.newContext();
-        Page _page = _context.newPage();
+        _page = _context.newPage();
         _page.navigate(PageURL);
         _deckBuilderPage = new DeckBuilderPage(_page);
     }
@@ -49,6 +50,7 @@ public class DeckBuilderPageTest
     {
         _deckBuilderPage.ImportYDKFile();
         _deckBuilderPage.AssertImportYDKFile();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -58,6 +60,7 @@ public class DeckBuilderPageTest
         _deckBuilderPage.ImportYDKFile();
         _deckBuilderPage.ExportYDKFile();
         assertTrue(_deckBuilderPage.IsExportMatchImportYDKFile());
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -67,6 +70,7 @@ public class DeckBuilderPageTest
         _deckBuilderPage.ImportYDKFile();
         _deckBuilderPage.ClearDeck();
         _deckBuilderPage.AssertDeckCleared();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -76,6 +80,7 @@ public class DeckBuilderPageTest
         _deckBuilderPage.ImportYDKFile();
         _deckBuilderPage.SimulateStartHand(false);
         _deckBuilderPage.AssertSimulateStartHand(5);
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -85,6 +90,7 @@ public class DeckBuilderPageTest
         _deckBuilderPage.ImportYDKFile();
         _deckBuilderPage.SimulateStartHand(true);
         _deckBuilderPage.AssertSimulateStartHand(6);
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -95,6 +101,7 @@ public class DeckBuilderPageTest
 
         int mainDeckCardCount = _deckBuilderPage.GetMainDeckCardsCount();
         assertTrue(mainDeckCardCount >= 40 && mainDeckCardCount <= 60);
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -103,6 +110,7 @@ public class DeckBuilderPageTest
     {
         _deckBuilderPage.SearchForCards("Snatchy");
         _deckBuilderPage.AssertSearchForCards();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -113,6 +121,7 @@ public class DeckBuilderPageTest
         _deckBuilderPage.AssertSearchForCards();
         _deckBuilderPage.ResetFilter();
         _deckBuilderPage.AssertFilterReset();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -121,6 +130,7 @@ public class DeckBuilderPageTest
     {
         _deckBuilderPage.AddToMainDeck("Cupsy");
         _deckBuilderPage.AssertCardDraggedToMainDeck();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -129,6 +139,7 @@ public class DeckBuilderPageTest
     {
         _deckBuilderPage.AddToExtraDeck("Snatchy");
         _deckBuilderPage.AssertCardDraggedToExtraDeck();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -137,5 +148,6 @@ public class DeckBuilderPageTest
     {
         _deckBuilderPage.AddToSideDeck("Yummyusment");
         _deckBuilderPage.AssertCardDraggedToSideDeck();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 }

@@ -14,6 +14,7 @@ class CardDatabasePageTest
     private static Playwright _playwright;
     private static Browser _browser;
     private BrowserContext _context;
+    private Page _page;
     private CardDatabasePage _cardDatabasePage;
 
     @BeforeAll
@@ -33,7 +34,7 @@ class CardDatabasePageTest
     void CreateContextAndPage()
     {
         _context = _browser.newContext();
-        Page _page = _context.newPage();
+        _page = _context.newPage();
         _page.navigate(PageURL);
         _cardDatabasePage = new CardDatabasePage(_page);
     }
@@ -50,6 +51,7 @@ class CardDatabasePageTest
     {
         _cardDatabasePage.ApplyFilter("Malebranche", Attribute.Dark, Type.Fiend, 1000, 0, 3, 0, 0, Language.English, SortBy.DEF, false);
         assertTrue(_cardDatabasePage.IsFilterApplied());
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -58,6 +60,7 @@ class CardDatabasePageTest
     {
         _cardDatabasePage.SetLimit(FilterLimit.Limit__50);
         _cardDatabasePage.AssertLimitSet();
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 
     @Test
@@ -68,5 +71,6 @@ class CardDatabasePageTest
         CardFilteringTest();
         _cardDatabasePage.ResetFilters();
         assertTrue(_cardDatabasePage.IsFilterReset());
+        _page.waitForTimeout(BrowserSettings.AfterTestDelay);
     }
 }
