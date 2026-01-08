@@ -6,6 +6,7 @@ import org.junit.jupiter.api.*;
 
 import static org.junit.Assert.assertTrue;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DeckBuilderPageTest
 {
     private static final String PageURL = "https://ygoprodeck.com/deckbuilder/";
@@ -20,7 +21,7 @@ public class DeckBuilderPageTest
     static void LaunchBrowser()
     {
         _playwright = Playwright.create();
-        _browser = _playwright.chromium().launch(BrowserSettings.LaunchOptions);
+        _browser = _playwright.firefox().launch(BrowserSettings.LaunchOptions);
     }
 
     @AfterAll
@@ -32,7 +33,7 @@ public class DeckBuilderPageTest
     @BeforeEach
     void CreateContextAndPage()
     {
-        _context = _browser.newContext();
+        _context = _browser.newContext(new Browser.NewContextOptions().setViewportSize(2560, 1440));
         _page = _context.newPage();
         _page.navigate(PageURL);
         _deckBuilderPage = new DeckBuilderPage(_page);
@@ -46,6 +47,7 @@ public class DeckBuilderPageTest
 
     @Test
     @DisplayName("Import a Deck - Smoke Test")
+    @Order(1)
     void ImportYDKFileTest()
     {
         _deckBuilderPage.ImportYDKFile();
@@ -55,6 +57,7 @@ public class DeckBuilderPageTest
 
     @Test
     @DisplayName("Export a Deck - Smoke Test")
+    @Order(2)
     void ExportYDKFileTest()
     {
         _deckBuilderPage.ImportYDKFile();
@@ -65,6 +68,7 @@ public class DeckBuilderPageTest
 
     @Test
     @DisplayName("Clear a Deck")
+    @Order(3)
     void ClearDeckTest()
     {
         _deckBuilderPage.ImportYDKFile();
@@ -75,6 +79,7 @@ public class DeckBuilderPageTest
 
     @Test
     @DisplayName("Simulate Starting Hand")
+    @Order(4)
     void SimulateStartHandGoingFirstTest()
     {
         _deckBuilderPage.ImportYDKFile();
@@ -85,6 +90,7 @@ public class DeckBuilderPageTest
 
     @Test
     @DisplayName("Simulate Starting Hand (Going Second)")
+    @Order(5)
     void SimulateStartHandGoingSecondTest()
     {
         _deckBuilderPage.ImportYDKFile();
@@ -95,6 +101,7 @@ public class DeckBuilderPageTest
 
     @Test
     @DisplayName("Create a random deck")
+    @Order(6)
     void RandomizeDeckTest()
     {
         _deckBuilderPage.RandomizeDeck();
@@ -106,6 +113,7 @@ public class DeckBuilderPageTest
 
     @Test
     @DisplayName("Search for cards (DeckBuilder)")
+    @Order(7)
     void SearchForCardsTest()
     {
         _deckBuilderPage.SearchForCards("Snatchy");
@@ -115,6 +123,7 @@ public class DeckBuilderPageTest
 
     @Test
     @DisplayName("Reset Card Filters (DeckBuilder)")
+    @Order(8)
     void ResetFilterTest()
     {
         _deckBuilderPage.SearchForCards("Snatchy");
@@ -126,6 +135,7 @@ public class DeckBuilderPageTest
 
     @Test
     @DisplayName("Add Card to Main Deck by Dragging")
+    @Order(9)
     void DragToMainDeckTest()
     {
         _deckBuilderPage.AddToMainDeck("Cupsy");
@@ -135,6 +145,7 @@ public class DeckBuilderPageTest
 
     @Test
     @DisplayName("Add Card to Extra Deck by Dragging")
+    @Order(10)
     void DragToExtraDeckTest()
     {
         _deckBuilderPage.AddToExtraDeck("Snatchy");
@@ -144,6 +155,7 @@ public class DeckBuilderPageTest
 
     @Test
     @DisplayName("Add Card to Side Deck by Dragging")
+    @Order(11)
     void DragToSideDeckTest()
     {
         _deckBuilderPage.AddToSideDeck("Yummyusment");

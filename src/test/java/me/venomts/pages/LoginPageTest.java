@@ -7,6 +7,7 @@ import com.microsoft.playwright.Playwright;
 import me.venomts.BrowserSettings;
 import org.junit.jupiter.api.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LoginPageTest
 {
     // NOTE: Tests may FAIL due to Captcha system that the site uses to prevent bot activity
@@ -22,7 +23,7 @@ public class LoginPageTest
     static void LaunchBrowser()
     {
         _playwright = Playwright.create();
-        _browser = _playwright.chromium().launch(BrowserSettings.LaunchOptions);
+        _browser = _playwright.firefox().launch(BrowserSettings.LaunchOptions);
     }
 
     @AfterAll
@@ -34,7 +35,7 @@ public class LoginPageTest
     @BeforeEach
     void CreateContextAndPage()
     {
-        _context = _browser.newContext();
+        _context = _browser.newContext(new Browser.NewContextOptions().setViewportSize(2560, 1440));
         _page = _context.newPage();
         _page.navigate(PageURL);
         _loginPage = new LoginPage(_page);
@@ -48,6 +49,7 @@ public class LoginPageTest
 
     @Test
     @DisplayName("Log In with Existing Account - Smoke Test")
+    @Order(1)
     public void LoginExistingAccountTest()
     {
         String displayName = "SoftwareTestingAndMaintenance";
@@ -60,6 +62,7 @@ public class LoginPageTest
 
     @Test
     @DisplayName("Login with too short Password - Negative Test")
+    @Order(2)
     public void PasswordTooShortTest()
     {
         String displayName = "SoftwareTestingAndMaintenance";
@@ -71,6 +74,7 @@ public class LoginPageTest
 
     @Test
     @DisplayName("Login with Unregistered Email")
+    @Order(3)
     public void InvalidMailTest()
     {
         String mail = "ovojejakodugacakmailkojivjerovatnonikonema@honeymoon.com";
@@ -82,6 +86,7 @@ public class LoginPageTest
 
     @Test
     @DisplayName("Login with Invalid Password")
+    @Order(4)
     public void InvalidPasswordTest()
     {
         String mail = "SoftwareTestingAndMaintenance";
@@ -93,6 +98,7 @@ public class LoginPageTest
 
     @Test
     @DisplayName("Redirect from Register Page to Login Page")
+    @Order(5)
     public void SignupRedirectTest()
     {
         _loginPage.GoToRegister();

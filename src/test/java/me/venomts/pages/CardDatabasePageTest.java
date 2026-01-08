@@ -7,6 +7,7 @@ import org.junit.jupiter.api.*;
 
 import static org.junit.Assert.assertTrue;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CardDatabasePageTest
 {
     private static final String PageURL = "https://ygoprodeck.com/card-database/";
@@ -21,7 +22,7 @@ class CardDatabasePageTest
     static void LaunchBrowser()
     {
         _playwright = Playwright.create();
-        _browser = _playwright.chromium().launch(BrowserSettings.LaunchOptions);
+        _browser = _playwright.firefox().launch(BrowserSettings.LaunchOptions);
     }
 
     @AfterAll
@@ -33,7 +34,7 @@ class CardDatabasePageTest
     @BeforeEach
     void CreateContextAndPage()
     {
-        _context = _browser.newContext();
+        _context = _browser.newContext(new Browser.NewContextOptions().setViewportSize(2560, 1440));
         _page = _context.newPage();
         _page.navigate(PageURL);
         _cardDatabasePage = new CardDatabasePage(_page);
@@ -47,6 +48,7 @@ class CardDatabasePageTest
 
     @Test
     @DisplayName("Search for Cards - Smoke Test")
+    @Order(1)
     void CardFilteringTest()
     {
         _cardDatabasePage.ApplyFilter("Malebranche", Attribute.Dark, Type.Fiend, 1000, 0, 3, 0, 0, Language.English, SortBy.DEF, false);
@@ -56,6 +58,7 @@ class CardDatabasePageTest
 
     @Test
     @DisplayName("Card Display Limit")
+    @Order(2)
     void SetLimitTest()
     {
         _cardDatabasePage.SetLimit(FilterLimit.Limit__50);
@@ -65,6 +68,7 @@ class CardDatabasePageTest
 
     @Test
     @DisplayName("Reset Card Filters")
+    @Order(3)
     void ResetFiltersTest()
     {
         SetLimitTest();

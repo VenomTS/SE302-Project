@@ -6,6 +6,7 @@ import org.junit.jupiter.api.*;
 
 import static org.junit.Assert.assertFalse;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RegisterPageTest
 {
     // NOTE: Tests may FAIL due to Captcha system that the site uses to prevent bot activity
@@ -21,7 +22,8 @@ class RegisterPageTest
     static void LaunchBrowser()
     {
         _playwright = Playwright.create();
-        _browser = _playwright.chromium().launch(BrowserSettings.LaunchOptions);
+
+        _browser = _playwright.firefox().launch(BrowserSettings.LaunchOptions);
     }
 
     @AfterAll
@@ -33,7 +35,7 @@ class RegisterPageTest
     @BeforeEach
     void CreateContextAndPage()
     {
-        _context = _browser.newContext();
+        _context = _browser.newContext(new Browser.NewContextOptions().setViewportSize(2560, 1440));
         _page = _context.newPage();
         _page.navigate(PageURL);
         _registerPage = new RegisterPage(_page);
@@ -47,6 +49,7 @@ class RegisterPageTest
 
     @Test
     @DisplayName("Account Registration - Smoke Test")
+    @Order(1)
     //@Disabled // - Disable this test when running or use different credentials below since ones below will be used for presenting
     void RegisterNewAccountTest()
     {
@@ -61,6 +64,7 @@ class RegisterPageTest
 
     @Test
     @DisplayName("Registering an Existing Account - Negative Test")
+    @Order(2)
     void AccountAlreadyExistsTest()
     {
         String displayName = "Kaibaman";
@@ -73,6 +77,7 @@ class RegisterPageTest
 
     @Test
     @DisplayName("Registering with Invalid Display Name - Negative Test")
+    @Order(3)
     void UsernameContainsInvalidCharactersTest()
     {
         String displayName = "Kaibaman!";
@@ -85,6 +90,7 @@ class RegisterPageTest
 
     @Test
     @DisplayName("Registering with too short Password - Negative Test")
+    @Order(4)
     void ShortPasswordTest()
     {
         String displayName = "Kaibaman";
@@ -98,6 +104,7 @@ class RegisterPageTest
 
     @Test
     @DisplayName("Registering with non-matching Passwords - Negative Test")
+    @Order(5)
     void PasswordMismatchTest()
     {
         String displayName = "Kaibaman";
@@ -111,6 +118,7 @@ class RegisterPageTest
 
     @Test
     @DisplayName("Redirect to Login from Register")
+    @Order(6)
     void GoToLoginTest()
     {
         _registerPage.GoToLogIn();
@@ -120,6 +128,7 @@ class RegisterPageTest
 
     @Test
     @DisplayName("Registering with Invalid Email Address")
+    @Order(7)
     void InvalidMailTest()
     {
         String displayName = "Kaibaman";
